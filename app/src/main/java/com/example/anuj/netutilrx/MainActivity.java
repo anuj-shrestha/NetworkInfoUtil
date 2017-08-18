@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private Disposable disposableNetworkSubscription;
     MyNetworkInfo myNetworkInfo;
-    CompositeDisposable compositeDisposable = null;
 
 
     @Override
@@ -53,9 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Received Type: ", String.valueOf(myNetworkInfo.getNetworkType()));
                 Log.d("Received Name: ", String.valueOf(myNetworkInfo.getNetworkName()));
                 Log.d("Received Roaming: ", String.valueOf(myNetworkInfo.isRoamingAvailable()));
-//                disposableNetworkSubscription.dispose();
-                disposableNetworkSubscription.dispose();
-                myNetworkInfo.unregisterBroadcastReceiver();
+
             }
         });
 
@@ -64,14 +61,32 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        disposableNetworkSubscription.dispose();
         super.onDestroy();
+        if (myNetworkInfo != null) {
+
+            disposableNetworkSubscription.dispose();
+            myNetworkInfo.unregisterBroadcastReceiver();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        if (myNetworkInfo != null) myNetworkInfo.unregisterBroadcastReceiver();
+//        if (myNetworkInfo != null) {
+//
+//            disposableNetworkSubscription.dispose();
+//            myNetworkInfo.unregisterBroadcastReceiver();
+//        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        disposableNetworkSubscription = myNetworkInfo.getNetworkInfoChanges()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(x -> System.out.println(x));
+//
+//        myNetworkInfo.registerBroadcastReceiver();
+    }
 }
