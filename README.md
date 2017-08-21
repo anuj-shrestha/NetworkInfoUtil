@@ -1,18 +1,17 @@
 # NetworkInfoUtil
 
-A network util to receive network and internet information.
+A network utility to receive network and internet information.
 
-Using rxjava observables this util class keeps checking availabilty of internet throughout the app runtime and keeps storing current network information in private fields which can be accessed through getters at any time from the object of this util class. 
+This utility class leverages `RxJava` `Observables` to provide internet connectivity and network information, throughout the app runtime.
 
-To use this NetworkInfoUtil class, Create an object of this class in your activity/fragment and subscribe to getNetworkInfoChanges method. 
+To use this `NetworkInfoUtil` class, create an object of this class in your `activity/fragment` and `subscribe` to the `getNetworkInfoChanges` method. 
 
-Then register broadcast receiver by calling registerBroadcastReceiver method of this class.
+Then, register the broadcast receiver by calling the `registerBroadcastReceiver` on the object.
 
 ```
  MyNetworkInfo myNetworkInfo;
  private Disposable disposableNetworkSubscription;
 
- 
  disposableNetworkSubscription = myNetworkInfo.getNetworkInfoChanges()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -20,7 +19,8 @@ Then register broadcast receiver by calling registerBroadcastReceiver method of 
 
  myNetworkInfo.registerBroadcastReceiver();
 ```
-Now we can get information about our network by calling getters of this same class.
+Network information is now exposed via several getters on the object.
+
 ```
   Log.i("Is Network Available: ", String.valueOf(myNetworkInfo.getIsNetworkAvailable()));
   Log.i("Is Internet Available: ", String.valueOf(myNetworkInfo.getIsInternetAvailable()));
@@ -29,11 +29,12 @@ Now we can get information about our network by calling getters of this same cla
   Log.i("Is Roaming Available: ", String.valueOf(myNetworkInfo.isRoamingAvailable()));
 ```
 
-Lastly don't forget to unsubscribe or dispose our subscription and unregister our broadcast receiver. To dispose subscription cast getNetworkInfoChanges as a disposable and call its dispose method. To unregister broadcast receiver simply call unregisterBroadcastReciever method provided by our util class.
+Lastly, don't forget to unsubscribe from the Observable by calling `dispose`, and unregister the broadcast receiver. To dispose the subscription, cast `getNetworkInfoChanges` as a disposable and call its `dispose` method. To unregister the broadcast receiver simply call `unregisterBroadcastReciever` method provided by our util class.
 ```
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        
         if (myNetworkInfo != null) {
             disposableNetworkSubscription.dispose();
             myNetworkInfo.unregisterBroadcastReceiver();
